@@ -1,0 +1,119 @@
+# =========================
+# GO
+# =========================
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Binary folders
+bin/
+build/
+dist/
+
+# Go workspace
+go.work
+go.work.sum
+
+# Dependency directories
+vendor/
+
+# Coverage
+coverage.out
+coverage.html
+*.coverprofile
+
+# Logs
+*.log
+
+# =========================
+# DATABASE
+# =========================
+*.db
+*.sqlite
+*.sqlite3
+database/forum.db
+
+# =========================
+# ENVIRONMENT VARIABLES
+# =========================
+.env
+.env.local
+.env.dev
+.env.prod
+
+# =========================
+# IDE / EDITORS
+# =========================
+
+# VSCode
+.vscode/
+
+# JetBrains
+.idea/
+
+# Sublime
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+
+# =========================
+# OS FILES
+# =========================
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Linux
+*~
+
+# =========================
+# NODE (si frontend plus tard)
+# =========================
+node_modules/
+
+# =========================
+# DOCKER
+# =========================
+docker-compose.override.yml
+
+# =========================
+# TEMP FILES
+# =========================
+tmp/
+temp/
+.cache/
+
+# =========================
+# UPLOADS
+# =========================
+static/uploads/
+
+# =========================
+# TESTS
+# =========================
+*.prof
+*.pprof
+
+# =========================
+# SECURITY
+# =========================
+secrets/
+private/
+
+# =========================
+# MISC
+# =========================
+*.bak
+*.old
+*.tmp
