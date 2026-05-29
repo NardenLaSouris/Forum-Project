@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 
@@ -8,22 +9,25 @@ import (
 	"forum/handlers"
 )
 
-http.HandleFunc("/register", handlers.RegisterHandler)
-
-http.HandleFunc("/register-page", func(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "./templates/register.html")
-})
-
 func main() {
+	http.HandleFunc("/register", handlers.RegisterHandler)
+	http.HandleFunc("/register-page", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./templates/register.html")
+	})
 
 	err := database.InitDB()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	http.HandleFunc("/register", handlers.RegisterHandler)
+	err = database.CreateTables()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	fmt.Println("Server running on :8080")
 
-	http.ListenAndServe(":8080", nil)
+	if err := http.ListenAndServe(":8080", nil); err != nil {
+		log.Fatal(err)
+	}
 }
