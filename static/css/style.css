@@ -32,9 +32,11 @@ a:hover { text-decoration: underline; }
 }
 
 .navbar-brand {
-    font-weight: 700;
-    font-size: 1.1rem;
-    color: #1c1c1c;
+    font-weight: 800;
+    font-size: 1.35rem;
+    color: #d2413a;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
 }
 
 .navbar-brand a { color: inherit; text-decoration: none; }
