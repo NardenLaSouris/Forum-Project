@@ -2,78 +2,73 @@ package handlers
 
 import (
 	"database/sql"
-	"fmt"
+	"html/template"
 	"net/http"
+	"strings"
 
-	"forum/database"
 	"forum/utils"
 )
 
-func RegisterHandler(w http.ResponseWriter, r *http.Request) {
+// RegisterHandler gère l'inscription des nouveaux utilisateurs.
+func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
+	tmpl := template.Must(template.ParseFiles("templates/register.html"))
 
-	// Vérifie méthode POST
-	if r.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
+	switch r.Method {
+	case http.MethodGet:
+		tmpl.Execute(w, nil)
+
+	case http.MethodPost:
+		username := strings.TrimSpace(r.FormValue("username"))
+		email := strings.TrimSpace(r.FormValue("email"))
+		password := r.FormValue("password")
+
+		// Validation des champs
+		if err := utils.ValidateRegister(username, email, password); err != nil {
+			tmpl.Execute(w, map[string]string{"Error": err.Error()})
+			return
+		}
+
+		// Hash du mot de passe
+		hashedPassword, err := utils.HashPassword(password)
+		if err != nil {
+			http.Error(w, "Erreur interne du serveur", http.StatusInternalServerError)
+			return
+		}
+
+		// Insertion en base de données (requête préparée → protection SQL Injection)
+		_, err = h.db.Exec(
+			"INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
+			username, email, hashedPassword,
+		)
+		if err != nil {
+			// Vérifie si l'email ou le username est déjà utilisé
+			if strings.Contains(err.Error(), "UNIQUE constraint failed: users.email") {
+				tmpl.Execute(w, map[string]string{"Error": "Cet e-mail est déjà utilisé"})
+				return
+			}
+			if strings.Contains(err.Error(), "UNIQUE constraint failed: users.username") {
+				tmpl.Execute(w, map[string]string{"Error": "Ce nom d'utilisateur est déjà pris"})
+				return
+			}
+			http.Error(w, "Erreur interne du serveur", http.StatusInternalServerError)
+			return
+		}
+
+		// Inscription réussie → redirection vers la page de login
+		http.Redirect(w, r, "/login?registered=1", http.StatusSeeOther)
+
+	default:
+		http.Error(w, "Méthode non autorisée", http.StatusMethodNotAllowed)
 	}
+}
 
-	// Récupération données formulaire
-	username := r.FormValue("username")
-	email := r.FormValue("email")
-	password := r.FormValue("password")
-
-	// Vérification champs vides
-	if username == "" || email == "" || password == "" {
-		http.Error(w, "All fields are required", http.StatusBadRequest)
-		return
-	}
-
-	// Vérifie si email déjà utilisé
-	var existingID int
-
-	err := database.DB.QueryRow(
-		"SELECT id FROM users WHERE email = ?",
-		email,
-	).Scan(&existingID)
-
-	// SI email trouvé
-	if err == nil {
-		http.Error(w, "Email already used", http.StatusConflict)
-		return
-	}
-
-	// SI autre erreur SQL
-	if err != sql.ErrNoRows {
-		http.Error(w, "Database error", http.StatusInternalServerError)
-		fmt.Println(err)
-		return
-	}
-
-	// Hash du mot de passe
-	hashedPassword, err := utils.HashPassword(password)
-	if err != nil {
-		http.Error(w, "Error hashing password", http.StatusInternalServerError)
-		return
-	}
-
-	// Insertion utilisateur
-	_, err = database.DB.Exec(
-		`
-		INSERT INTO users(username, email, password)
-		VALUES (?, ?, ?)
-		`,
-		username,
-		email,
-		hashedPassword,
-	)
-
-	if err != nil {
-		http.Error(w, "Error creating user", http.StatusInternalServerError)
-		fmt.Println(err)
-		return
-	}
-
-	// Succès
-	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte("User created successfully"))
+// getUserByEmail récupère un utilisateur par son email.
+// Retourne sql.ErrNoRows si aucun utilisateur trouvé.
+func getUserByEmail(db *sql.DB, email string) (int, string, string, error) {
+	var id int
+	var username, hashedPassword string
+	err := db.QueryRow(
+		"SELECT id, username, password FROM users WHERE email = ?", email,
+	).Scan(&id, &username, &hashedPassword)
+	return id, username, hashedPassword, err
 }
