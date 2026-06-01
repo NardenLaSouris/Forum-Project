@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nouveau post - Forum</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-brand"><a href="/">📋 Forum</a></div>
+    </header>
+
+    <div class="container">
+        <div class="form-card">
+            <h1>Nouveau post</h1>
+
+            {{if .Error}}
+            <div class="alert alert-error">{{.Error}}</div>
+            {{end}}
+
+            <form method="POST" action="/post/create">
+                <div class="form-group">
+                    <label for="title">Titre</label>
+                    <input type="text" id="title" name="title"
+                           placeholder="Titre de votre post" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="content">Contenu</label>
+                    <textarea id="content" name="content" rows="8"
+                              placeholder="Rédigez votre post ici..." required></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <a href="/" class="btn btn-outline">Annuler</a>
+                    <button type="submit" class="btn btn-primary">Publier</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
