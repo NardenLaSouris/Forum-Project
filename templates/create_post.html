@@ -1,43 +1,28 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nouveau post - Forum</title>
-    <link rel="stylesheet" href="/static/css/style.css">
-</head>
-<body>
-    <header class="navbar">
-        <div class="navbar-brand"><a href="/">📋 Forum</a></div>
-    </header>
-
-    <div class="container">
-        <div class="form-card">
-            <h1>Nouveau post</h1>
-
-            {{if .Error}}
-            <div class="alert alert-error">{{.Error}}</div>
-            {{end}}
-
-            <form method="POST" action="/post/create">
-                <div class="form-group">
-                    <label for="title">Titre</label>
-                    <input type="text" id="title" name="title"
-                           placeholder="Titre de votre post" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="content">Contenu</label>
-                    <textarea id="content" name="content" rows="8"
-                              placeholder="Rédigez votre post ici..." required></textarea>
-                </div>
-
-                <div class="form-actions">
-                    <a href="/" class="btn btn-outline">Annuler</a>
-                    <button type="submit" class="btn btn-primary">Publier</button>
-                </div>
-            </form>
+{{define "content"}}
+<h1>Nouveau post</h1>
+<div class="form-card" style="max-width:600px;margin:1rem 0">
+    <form method="POST" action="/create">
+        <div class="form-group">
+            <label>Titre</label>
+            <input type="text" name="title" required>
         </div>
-    </div>
-</body>
-</html>
+        <div class="form-group">
+            <label>Catégorie</label>
+            <select name="category">
+                <option value="">-- Choisir --</option>
+                <option value="tech">Tech</option>
+                <option value="jeux">Jeux</option>
+                <option value="general">Général</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Contenu</label>
+            <textarea name="content" required></textarea>
+        </div>
+        <div style="display:flex;gap:0.5rem">
+            <button type="submit">Publier</button>
+            <a href="/" class="btn btn-ghost">Annuler</a>
+        </div>
+    </form>
+</div>
+{{end}}
