@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}} - Forum</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="navbar-brand"><a href="/">📋 Forum</a></div>
+        <nav>
+            <a href="/" class="btn btn-outline">← Retour</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <article class="post-full">
+            <div class="post-meta">
+                <span class="post-author">@{{.Username}}</span>
+                <span class="post-date">{{.CreatedAt.Format "02/01/2006 à 15:04"}}</span>
+            </div>
+            <h1>{{.Title}}</h1>
+            <div class="post-content">{{.Content}}</div>
+        </article>
+    </div>
+</body>
+</html>
