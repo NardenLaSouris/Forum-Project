@@ -1,28 +1,53 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{.Title}} - Forum</title>
-    <link rel="stylesheet" href="/static/css/style.css">
-</head>
-<body>
-    <header class="navbar">
-        <div class="navbar-brand"><a href="/">📋 Forum</a></div>
-        <nav>
-            <a href="/" class="btn btn-outline">← Retour</a>
-        </nav>
-    </header>
-
-    <div class="container">
-        <article class="post-full">
-            <div class="post-meta">
-                <span class="post-author">@{{.Username}}</span>
-                <span class="post-date">{{.CreatedAt.Format "02/01/2006 à 15:04"}}</span>
-            </div>
-            <h1>{{.Title}}</h1>
-            <div class="post-content">{{.Content}}</div>
-        </article>
+{{define "content"}}
+{{with .Post}}
+<div class="post-card">
+    <div class="post-meta">
+        {{.Author}}
+        {{if .Category}} · <span class="badge">{{.Category}}</span>{{end}}
+        · {{.CreatedAt}}
     </div>
-</body>
-</html>
+    <h1>{{.Title}}</h1>
+    <p style="margin:1rem 0;color:#444">{{.Content}}</p>
+
+    <div class="post-footer">
+        <form method="POST" action="/like" style="display:inline">
+            <input type="hidden" name="post_id" value="{{.ID}}">
+            <button type="submit">👍 {{.Likes}}</button>
+        </form>
+        <form method="POST" action="/dislike" style="display:inline">
+            <input type="hidden" name="post_id" value="{{.ID}}">
+            <button type="submit">👎 {{.Dislikes}}</button>
+        </form>
+        {{if $.User}}
+        <div class="post-actions">
+            <a href="/edit?id={{.ID}}" class="btn btn-ghost">Éditer</a>
+            <a href="/delete?id={{.ID}}" class="btn btn-danger">Supprimer</a>
+        </div>
+        {{end}}
+    </div>
+</div>
+
+<h2 style="margin:1.5rem 0 0.75rem">Commentaires ({{len .Comments}})</h2>
+
+<div class="comment-list">
+    {{range .Comments}}
+    <div class="comment-item">
+        <div class="comment-author">{{.Author}}</div>
+        {{.Content}}
+    </div>
+    {{else}}
+    <p style="color:#888">Aucun commentaire.</p>
+    {{end}}
+</div>
+
+{{if $.User}}
+<form method="POST" action="/comment" class="comment-form">
+    <input type="hidden" name="post_id" value="{{.ID}}">
+    <input name="content" placeholder="Commenter..." required>
+    <button type="submit">Envoyer</button>
+</form>
+{{else}}
+<p style="margin-top:1rem;color:#888"><a href="/login">Connectez-vous</a> pour commenter.</p>
+{{end}}
+{{end}}
+{{end}}
