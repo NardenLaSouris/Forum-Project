@@ -11,11 +11,17 @@ import (
 
 // RegisterHandler gère l'inscription des nouveaux utilisateurs.
 func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
-	tmpl := template.Must(template.ParseFiles("templates/register.html"))
+	tmpl := template.Must(template.ParseFiles(
+		"templates/base.html",
+		"templates/partials/navbar.html",
+		"templates/partials/alerts.html",
+		"templates/partials/footer.html",
+		"templates/register.html",
+	))
 
 	switch r.Method {
 	case http.MethodGet:
-		tmpl.Execute(w, nil)
+		tmpl.ExecuteTemplate(w, "base", nil)
 
 	case http.MethodPost:
 		username := strings.TrimSpace(r.FormValue("username"))
@@ -24,7 +30,7 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 
 		// Validation des champs
 		if err := utils.ValidateRegister(username, email, password); err != nil {
-			tmpl.Execute(w, map[string]string{"Error": err.Error()})
+			tmpl.ExecuteTemplate(w, "base", map[string]string{"Error": err.Error()})
 			return
 		}
 
@@ -43,11 +49,11 @@ func (h *AuthHandler) Register(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			// Vérifie si l'email ou le username est déjà utilisé
 			if strings.Contains(err.Error(), "UNIQUE constraint failed: users.email") {
-				tmpl.Execute(w, map[string]string{"Error": "Cet e-mail est déjà utilisé"})
+				tmpl.ExecuteTemplate(w, "base", map[string]string{"Error": "Cet e-mail est déjà utilisé"})
 				return
 			}
 			if strings.Contains(err.Error(), "UNIQUE constraint failed: users.username") {
-				tmpl.Execute(w, map[string]string{"Error": "Ce nom d'utilisateur est déjà pris"})
+				tmpl.ExecuteTemplate(w, "base", map[string]string{"Error": "Ce nom d'utilisateur est déjà pris"})
 				return
 			}
 			http.Error(w, "Erreur interne du serveur", http.StatusInternalServerError)
