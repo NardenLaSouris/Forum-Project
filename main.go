@@ -7,27 +7,42 @@ import (
 
 	"forum/database"
 	"forum/handlers"
+	"forum/middleware"
 )
 
 func main() {
-	http.HandleFunc("/register", handlers.RegisterHandler)
-	http.HandleFunc("/register-page", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "./templates/register.html")
-	})
-
-	err := database.InitDB()
+	// Initialisation de la base de données
+	db, err := database.Init()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Erreur initialisation base de données : %v", err)
+	}
+	defer db.Close()
+
+	// Création des tables
+	if err := database.CreateTables(db); err != nil {
+		log.Fatalf("Erreur création tables : %v", err)
 	}
 
-	err = database.CreateTables()
-	if err != nil {
-		log.Fatal(err)
-	}
+	// Handlers avec injection de la DB
+	authHandler := handlers.NewAuthHandler(db)
+	postHandler := handlers.NewPostHandler(db)
 
-	fmt.Println("Server running on :8080")
+	mux := http.NewServeMux()
 
-	if err := http.ListenAndServe(":8080", nil); err != nil {
-		log.Fatal(err)
-	}
+	// Fichiers statiques
+	fs := http.FileServer(http.Dir("./static"))
+	mux.Handle("/static/", http.StripPrefix("/static/", fs))
+
+	// Routes publiques
+	mux.HandleFunc("/", postHandler.Index)
+	mux.HandleFunc("/register", authHandler.Register)
+	mux.HandleFunc("/login", authHandler.Login)
+
+	// Routes protégées (middleware auth)
+	mux.Handle("/logout", middleware.Auth(db, http.HandlerFunc(authHandler.Logout)))
+	mux.Handle("/post/create", middleware.Auth(db, http.HandlerFunc(postHandler.Create)))
+	mux.Handle("/post/", middleware.Auth(db, http.HandlerFunc(postHandler.Show)))
+
+	fmt.Println("Serveur démarré sur http://localhost:8080")
+	log.Fatal(http.ListenAndServe(":8080", mux))
 }
