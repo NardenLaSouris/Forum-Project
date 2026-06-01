@@ -1,0 +1,246 @@
+/* =============================================
+   Forum Reddit Clone — Styles CSS
+   ============================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #f6f7f8;
+    color: #1c1c1c;
+    line-height: 1.6;
+}
+
+a {
+    color: #0079d3;
+    text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+/* ---- Navbar ---- */
+.navbar {
+    background: #fff;
+    border-bottom: 1px solid #edeff1;
+    padding: 0 1.5rem;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #1c1c1c;
+}
+
+.navbar-brand a { color: inherit; text-decoration: none; }
+.navbar nav { display: flex; gap: 0.5rem; align-items: center; }
+
+/* ---- Container ---- */
+.container {
+    max-width: 740px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* ---- Boutons ---- */
+.btn {
+    display: inline-block;
+    padding: 0.45rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background 0.15s, border-color 0.15s;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background: #0079d3;
+    color: #fff;
+    border-color: #0079d3;
+}
+.btn-primary:hover { background: #006cbf; text-decoration: none; }
+
+.btn-outline {
+    background: transparent;
+    color: #0079d3;
+    border-color: #0079d3;
+}
+.btn-outline:hover { background: #e8f0fe; text-decoration: none; }
+
+/* ---- Formulaires ---- */
+.form-card {
+    background: #fff;
+    border: 1px solid #edeff1;
+    border-radius: 4px;
+    padding: 2rem;
+    max-width: 440px;
+    margin: 0 auto;
+}
+
+.form-card h1 {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    color: #1c1c1c;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.3rem;
+    color: #878a8c;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid #edeff1;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.15s;
+    background: #f6f7f8;
+    font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: #0079d3;
+    background: #fff;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    margin-top: 1rem;
+}
+
+.form-footer {
+    text-align: center;
+    margin-top: 1.2rem;
+    font-size: 0.9rem;
+    color: #878a8c;
+}
+
+/* ---- Alertes ---- */
+.alert {
+    padding: 0.7rem 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.alert-error {
+    background: #fff0f0;
+    border: 1px solid #ffb3b3;
+    color: #d93025;
+}
+
+.alert-success {
+    background: #f0fff4;
+    border: 1px solid #b3ffd1;
+    color: #1a7f4b;
+}
+
+.alert-warning {
+    background: #fffbf0;
+    border: 1px solid #ffe0a0;
+    color: #8a6500;
+}
+
+/* ---- Liste des posts ---- */
+.post-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.post-card {
+    background: #fff;
+    border: 1px solid #edeff1;
+    border-radius: 4px;
+    padding: 1rem 1.2rem;
+    transition: border-color 0.15s;
+}
+.post-card:hover { border-color: #818384; }
+
+.post-meta {
+    display: flex;
+    gap: 0.75rem;
+    font-size: 0.8rem;
+    color: #878a8c;
+    margin-bottom: 0.4rem;
+}
+
+.post-author { font-weight: 700; color: #1c1c1c; }
+
+.post-title {
+    font-size: 1.05rem;
+    margin-bottom: 0.4rem;
+}
+.post-title a { color: #1c1c1c; }
+.post-title a:hover { color: #0079d3; text-decoration: none; }
+
+.post-excerpt {
+    font-size: 0.9rem;
+    color: #3c3c3c;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* ---- Post complet ---- */
+.post-full {
+    background: #fff;
+    border: 1px solid #edeff1;
+    border-radius: 4px;
+    padding: 1.5rem 2rem;
+}
+
+.post-full h1 {
+    margin: 0.5rem 0 1rem;
+    font-size: 1.4rem;
+}
+
+.post-content {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    white-space: pre-wrap;
+}
+
+/* ---- État vide ---- */
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    background: #fff;
+    border: 1px solid #edeff1;
+    border-radius: 4px;
+    color: #878a8c;
+}
+.empty-state p { margin-bottom: 1rem; }
