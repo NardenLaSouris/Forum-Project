@@ -11,13 +11,13 @@
         <div class="navbar-brand">Reddick</div>
         <nav>
             {{if .LoggedIn}}
-            <a href="../post/create" class="btn btn-primary">Nouveau post</a>
-            <form method="POST" action="../logout" style="display:inline">
+            <a href="/post/create" class="btn btn-primary">Nouveau post</a>
+            <form method="POST" action="/logout" style="display:inline">
                 <button type="submit" class="btn btn-outline">Déconnexion</button>
             </form>
             {{else}}
-            <a href="../login" class="btn btn-outline">Connexion</a>
-            <a href="../register" class="btn btn-primary">Inscription</a>
+            <a href="/login" class="btn btn-outline">Connexion</a>
+            <a href="/register" class="btn btn-primary">Inscription</a>
             {{end}}
         </nav>
     </header>
@@ -34,7 +34,7 @@
                     <span class="post-date">{{.CreatedAt.Format "02/01/2006 à 15:04"}}</span>
                 </div>
                 <h2 class="post-title">
-                    <a href="../post/{{.ID}}">{{.Title}}</a>
+                    <a href="/post/{{.ID}}">{{.Title}}</a>
                 </h2>
                 <p class="post-excerpt">{{.Content}}</p>
             </div>
@@ -44,7 +44,7 @@
         <div class="empty-state">
             <p>Aucun post pour l'instant.</p>
             {{if .LoggedIn}}
-            <a href="../post/create" class="btn btn-primary">Créer le premier post</a>
+            <a href="/post/create" class="btn btn-primary">Créer le premier post</a>
             {{end}}
         </div>
         {{end}}

@@ -14,7 +14,13 @@ import (
 
 // Login gère la connexion d'un utilisateur existant.
 func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
-	tmpl := template.Must(template.ParseFiles("templates/login.html"))
+	tmpl := template.Must(template.ParseFiles(
+		"templates/base.html",
+		"templates/partials/navbar.html",
+		"templates/partials/alerts.html",
+		"templates/partials/footer.html",
+		"templates/login.html",
+	))
 
 	switch r.Method {
 	case http.MethodGet:
@@ -22,7 +28,7 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Query().Get("registered") == "1" {
 			data["Success"] = "Inscription réussie ! Connectez-vous."
 		}
-		tmpl.Execute(w, data)
+		tmpl.ExecuteTemplate(w, "base", data)
 
 	case http.MethodPost:
 		email := strings.TrimSpace(r.FormValue("email"))
@@ -30,7 +36,7 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 
 		// Validation basique
 		if err := utils.ValidateLogin(email, password); err != nil {
-			tmpl.Execute(w, map[string]string{"Error": err.Error()})
+			tmpl.ExecuteTemplate(w, "base", map[string]string{"Error": err.Error()})
 			return
 		}
 
@@ -38,7 +44,7 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 		id, _, hashedPassword, err := getUserByEmail(h.db, email)
 		if err == sql.ErrNoRows {
 			// Message volontairement vague (sécurité : ne pas révéler si l'email existe)
-			tmpl.Execute(w, map[string]string{"Error": "Email ou mot de passe incorrect"})
+			tmpl.ExecuteTemplate(w, "base", map[string]string{"Error": "Email ou mot de passe incorrect"})
 			return
 		}
 		if err != nil {
@@ -48,7 +54,7 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 
 		// Vérification bcrypt
 		if err := utils.CheckPassword(hashedPassword, password); err != nil {
-			tmpl.Execute(w, map[string]string{"Error": "Email ou mot de passe incorrect"})
+			tmpl.ExecuteTemplate(w, "base", map[string]string{"Error": "Email ou mot de passe incorrect"})
 			return
 		}
 
