@@ -1,39 +1,45 @@
 package database
 
-import "fmt"
+import (
+	"database/sql"
+	"fmt"
+)
 
-func CreateTables() error {
+// CreateTables crée toutes les tables nécessaires si elles n'existent pas.
+func CreateTables(db *sql.DB) error {
+	queries := []string{
+		// Table des utilisateurs
+		`CREATE TABLE IF NOT EXISTS users (
+			id       INTEGER PRIMARY KEY AUTOINCREMENT,
+			username TEXT    NOT NULL UNIQUE,
+			email    TEXT    NOT NULL UNIQUE,
+			password TEXT    NOT NULL
+		)`,
 
-	usersTable := `
-	CREATE TABLE IF NOT EXISTS users (
-		id INTEGER PRIMARY KEY AUTOINCREMENT,
-		username TEXT NOT NULL UNIQUE,
-		email TEXT NOT NULL UNIQUE,
-		password TEXT NOT NULL
-	);
-	`
+		// Table des sessions
+		`CREATE TABLE IF NOT EXISTS sessions (
+			id         TEXT    PRIMARY KEY,
+			user_id    INTEGER NOT NULL,
+			expires_at DATETIME NOT NULL,
+			FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+		)`,
 
-	sessionsTable := `
-	CREATE TABLE IF NOT EXISTS sessions (
-		id TEXT PRIMARY KEY,
-		user_id INTEGER NOT NULL,
-		expires_at DATETIME NOT NULL,
-
-		FOREIGN KEY(user_id) REFERENCES users(id)
-	);
-	`
-
-	_, err := DB.Exec(usersTable)
-	if err != nil {
-		return err
+		// Table des posts
+		`CREATE TABLE IF NOT EXISTS posts (
+			id         INTEGER PRIMARY KEY AUTOINCREMENT,
+			user_id    INTEGER NOT NULL,
+			title      TEXT    NOT NULL,
+			content    TEXT    NOT NULL,
+			created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+			FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+		)`,
 	}
 
-	_, err = DB.Exec(sessionsTable)
-	if err != nil {
-		return err
+	for _, query := range queries {
+		if _, err := db.Exec(query); err != nil {
+			return fmt.Errorf("erreur création table : %w", err)
+		}
 	}
-
-	fmt.Println("Tables created")
 
 	return nil
 }
