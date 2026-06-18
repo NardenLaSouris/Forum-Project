@@ -1,22 +1,46 @@
-INSERT OR IGNORE INTO users (username, email, password) VALUES
-    ('alice',   'alice@example.com',   '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy'),
-    ('bob',     'bob@example.com',     '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy'),
-    ('charlie', 'charlie@example.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy');
+-- Nettoyage des tables
+DELETE FROM comments;
+DELETE FROM posts;
+DELETE FROM sessions;
+DELETE FROM users;
 
-INSERT OR IGNORE INTO posts (user_id, title, content, category) VALUES
-    (1, 'Bienvenue sur Reddick !',
-        'Ceci est le premier post du forum. N''hésitez pas à créer un compte et à participer !',
-        'general'),
-    (2, 'Go vs Rust : quel langage choisir en 2026 ?',
-        'Je travaille sur un nouveau projet backend et j''hésite entre Go et Rust. Go semble plus simple à prendre en main mais Rust offre de meilleures garanties mémoire. Vos avis ?',
-        'tech'),
-    (1, 'Les meilleurs jeux indé du moment',
-        'Voici ma liste des jeux indépendants à ne pas manquer cette année : Hollow Knight Silksong (enfin !), Hades II, et quelques autres pépites. Qu''est-ce que vous jouez en ce moment ?',
-        'jeux');
+-- Réinitialisation des IDs
+DELETE FROM sqlite_sequence WHERE name IN ('users', 'posts', 'comments');
 
-INSERT OR IGNORE INTO comments (post_id, user_id, content) VALUES
-    (1, 2, 'Super initiative ! Hâte de voir la communauté grandir.'),
-    (1, 3, 'Merci pour ce forum, l''interface est vraiment propre.'),
-    (2, 3, 'Go est mon choix de cœur pour un démarrage rapide. La concurrence avec les goroutines est vraiment intuitive.'),
-    (2, 1, 'Rust pour la performance et la sécurité, Go pour la simplicité. Tout dépend de tes contraintes !'),
-    (3, 2, 'Hades II est incroyable, le gameplay est encore plus fluide que le premier.');
+---------------------------------------------------------
+-- 1) Utilisateurs
+---------------------------------------------------------
+INSERT INTO users (username, email, password) VALUES
+('yves', 'yves@example.com', 'hashed_password_yves'),
+('ewen', 'ewen@example.com', 'hashed_password_ewen'),
+('benjamin', 'benjamin@example.com', 'hashed_password_benjamin');
+
+---------------------------------------------------------
+-- 2) Sessions (facultatif)
+---------------------------------------------------------
+INSERT INTO sessions (id, user_id, expires_at) VALUES
+('session_yves', 1, DATETIME('now', '+1 day')),
+('session_ewen', 2, DATETIME('now', '+1 day'));
+
+---------------------------------------------------------
+-- 3) Posts
+---------------------------------------------------------
+INSERT INTO posts (user_id, title, content, category) VALUES
+(1, 'Bienvenue sur notre forum', 'Salut tout le monde, bienvenue sur le projet !', 'general'),
+(2, 'Besoin d’aide en Go', 'Je comprends pas trop les goroutines, quelqu’un peut m’aider ?', 'programming'),
+(3, 'Organisation du projet', 'On devrait se faire un point pour répartir les tâches.', 'team'),
+(1, 'Tutoriel SQLite', 'Voici comment utiliser SQLite avec Go.', 'database'),
+(2, 'Partage de ressources', 'Voici quelques liens utiles pour progresser en Go.', 'resources');
+
+---------------------------------------------------------
+-- 4) Commentaires
+---------------------------------------------------------
+INSERT INTO comments (post_id, user_id, content) VALUES
+(1, 2, 'Merci Yves, c’est propre !'),
+(1, 3, 'On avance bien les gars.'),
+(2, 1, 'Oui je peux t’expliquer les goroutines.'),
+(2, 3, 'Bonne question, ça m’intéresse aussi.'),
+(3, 1, 'Bonne idée Benjamin.'),
+(4, 2, 'Super tuto, merci Yves.'),
+(5, 1, 'Très utile, merci Ewen.'),
+(5, 3, 'Je vais regarder ça.');
