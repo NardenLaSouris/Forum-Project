@@ -229,11 +229,11 @@ Go 1.24 ou supérieur
 ## 📥 Cloner le projet
 
 ```bash
-git clone <url-du-repository>
+git clone https://github.com/NardenLaSouris/Forum-Project.git
 ```
 
 ```bash
-cd ForumHub
+cd Forum-Project
 ```
 
 ---
